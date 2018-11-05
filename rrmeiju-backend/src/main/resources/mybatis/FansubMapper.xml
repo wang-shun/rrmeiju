@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.caizhukui.rrmeiju.mapper.FansubMapper">
+
+	<resultMap id="baseMap" type="Fansub">
+		<id property="id" column="id" />
+		<result property="uuid" column="uuid" />
+		<result property="fansubName" column="fansub_name" />
+		<result property="fansubInfo" column="fansub_info" />
+		<result property="foundationYear" column="foundation_year" />
+		<result property="logoUrl" column="logo_url" />
+		<result property="homepageUrl" column="homepage_url" />
+		<result property="weiboUrl" column="weibo_url" />
+		<result property="wechat" column="wechat" />
+		<result property="wechatUrl" column="wechat_url" />
+		<result property="bulletin" column="bulletin" />
+		<result property="gmtCreate" column="gmt_create" />
+        <result property="gmtModified" column="gmt_modified" />
+        <collection property="subtitles" javaType="ArrayList" column="id" ofType="Subtitle" select="com.caizhukui.rrmeiju.mapper.SubtitleMapper.getByFansubUuid" />
+        <collection property="userFansubs" javaType="ArrayList" column="id" ofType="UserFansub" select="com.caizhukui.rrmeiju.mapper.UserFansubMapper.getByFansubUuid" />
+	</resultMap>
+	
+	<select id="getByUserUuid" parameterType="String" resultType="Fansub" resultMap="baseMap">
+		SELECT f.* FROM fansub f
+		INNER JOIN user_fansub r ON f.uuid = r.fansub_uuid
+		WHERE r.user_uuid = #{userUuid}
+	</select>
+	
+	<select id="getBySeasonUuid" parameterType="String" resultType="Fansub" resultMap="baseMap">
+		SELECT DISTINCT f.* FROM subtitle s, fansub f 
+		WHERE s.season_uuid = #{seasonUuid} 
+		AND s.fansub_uuid = f.uuid
+	</select>
+
+</mapper>

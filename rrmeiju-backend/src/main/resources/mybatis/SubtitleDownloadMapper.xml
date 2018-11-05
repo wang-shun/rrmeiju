@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.caizhukui.rrmeiju.mapper.SubtitleDownloadMapper">
+	
+	<resultMap id="baseMap" type="SubtitleDownload">
+		<id property="id" column="id" />
+		<result property="uuid" column="uuid" />
+		<result property="subtitleUuid" column="subtitle_uuid" />
+		<result property="userUuid" column="user_uuid" />
+		<result property="remoteIp" column="remote_ip" />
+		<result property="downloadTime" column="download_time" />
+		<result property="gmtCreate" column="gmt_create" />
+        <result property="gmtModified" column="gmt_modified" />
+	</resultMap>
+	
+	<select id="getAllIps" resultType="String">
+		SELECT DISTINCT remote_ip FROM subtitle_download
+	</select>
+	
+	<select id="getByUserUuid" parameterType="String" resultType="SubtitleDownload" resultMap="baseMap">
+		SELECT * FROM subtitle_download WHERE user_uuid = #{userUuid} 
+		ORDER BY download_time DESC
+	</select>
+	
+	<select id="getBySubtitleId" parameterType="String" resultType="SubtitleDownload" resultMap="baseMap">
+		SELECT * FROM subtitle_download WHERE subtitle_id = #{subtitleId} 
+		ORDER BY download_time DESC
+	</select>
+	
+	<!-- ECharts statistical data -->
+	<select id="getGeoData" resultType="java.util.HashMap">
+		SELECT ip.province AS name, COUNT(sd.subtitle_download_id) AS value
+		FROM subtitle_download sd, ip
+		WHERE sd.remote_ip = ip.ip
+		GROUP BY ip.province
+		HAVING ip.province IN ('北京', '天津', '上海', '重庆', '河北', '山西', '辽宁', '吉林', '黑龙江', '江苏', '浙江', '安徽', '福建', '江西', '山东', '河南', '湖北', '湖南', '广东', '海南', '四川', '贵州', '云南', '陕西', '甘肃', '青海', '台湾', '内蒙古', '广西', '西藏', '宁夏', '新疆', '香港', '澳门')
+	</select>
+
+</mapper>

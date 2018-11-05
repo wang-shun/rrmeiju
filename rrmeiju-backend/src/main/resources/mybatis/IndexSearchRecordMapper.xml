@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.caizhukui.rrmeiju.mapper.IndexSearchRecordMapper">
+
+	<resultMap id="baseMap" type="IndexSearchRecord">
+		<id property="id" column="id" />
+		<result property="uuid" column="uuid" />
+		<result property="userUuid" column="user_uuid" />
+		<result property="remoteIp" column="remote_ip" />
+		<result property="keyword" column="keyword" />
+	</resultMap>
+	
+	<select id="getAllIps" resultType="String">
+		SELECT DISTINCT remote_ip FROM index_search_record
+	</select>
+
+</mapper>

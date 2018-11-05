@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.caizhukui.rrmeiju.mapper.SubtitleMapper">
+
+	<resultMap id="baseMap" type="Subtitle">
+		<id property="id" column="id" />
+        <result property="uuid" column="uuid" />
+		<result property="subtitleTitle" column="subtitle_title" />
+		<result property="subtitleUrl" column="subtitle_url" />
+		<result property="subtitleLang" column="subtitle_lang" />
+		<result property="fileFormat" column="file_format" />
+		<result property="fileSize" column="file_size" />
+		<result property="fileMd5" column="file_md5" />
+		<result property="episodeUuid" column="episode_uuid" />
+		<result property="seasonUuid" column="season_uuid" />
+		<result property="userUuid" column="user_uuid" />
+		<result property="fansubUuid" column="fansub_uuid" />
+		<result property="remark" column="remark" />
+		<result property="downloadCount" column="download_count" />
+		<result property="uploadTime" column="upload_time" />
+		<result property="gmtCreate" column="gmt_create" />
+        <result property="gmtModified" column="gmt_modified" />
+	    <association property="episode" column="episode_uuid" javaType="Episode" select="com.caizhukui.rrmeiju.mapper.EpisodeMapper.getByUuid" />
+        <association property="season" column="season_uuid" javaType="Season" select="com.caizhukui.rrmeiju.mapper.SeasonMapper.getByUuid" />
+        <association property="user" column="user_uuid" javaType="User" select="com.caizhukui.rrmeiju.mapper.UserMapper.getByUuid" />
+        <association property="fansub" column="fansub_uuid" javaType="Fansub" select="com.caizhukui.rrmeiju.mapper.FansubMapper.getByUuid" />
+        <collection property="subtitleFiles" javaType="ArrayList" column="id" ofType="SubtitleFile" select="com.caizhukui.rrmeiju.mapper.SubtitleFileMapper.getBySubtitleUuid" />
+    </resultMap>
+    	
+	<select id="getCountByFansubUuid" parameterType="String" resultType="int">
+		SELECT COUNT(id) FROM subtitle
+		WHERE fansub_uuid = #{fansubUuid}
+	</select>
+	
+    <select id="getByFansubUuid" parameterType="String" resultType="Subtitle" resultMap="baseMap">
+        SELECT * FROM subtitle WHERE fansub_uuid = #{fansubUuid}
+    </select>
+    
+	<select id="getCountByUserUuid" parameterType="String" resultType="int">
+		SELECT COUNT(id) FROM subtitle
+		WHERE user_uuid = #{userUuid}
+	</select>
+	
+    <select id="getByUserUuid" parameterType="String" resultType="Subtitle" resultMap="baseMap">
+        SELECT * FROM subtitle WHERE user_uuid = #{userUuid}
+    </select>
+    
+	<select id="getByFileMd5" parameterType="String" resultType="Subtitle" resultMap="baseMap">
+		SELECT * FROM subtitle WHERE file_md5 = #{fileMd5}
+	</select>
+	
+	<select id="getByTitle" parameterType="String" resultType="Subtitle" resultMap="baseMap">
+		SELECT * FROM subtitle WHERE subtitle_title LIKE '%${subtitleTitle}%'
+	</select>
+	
+	<select id="getByEpisodeUuid" parameterType="String" resultType="Subtitle" resultMap="baseMap">
+		SELECT * FROM subtitle WHERE episode_uuid = #{episodeUuid}
+	</select>
+	
+	<!-- 分页查询某一用户关注的剧集的所有字幕 -->
+	<select id="getUserFollowSubtitlesPaginated" parameterType="java.lang.Object" resultType="Subtitle" resultMap="baseMap">
+		SELECT su.* FROM subtitle su 
+		INNER JOIN season sa ON su.season_id = sa.season_id 
+		INNER JOIN serial sr ON sa.serial_id = sr.serial_id 
+		INNER JOIN user_serial us ON sr.serial_id = us.serial_id 
+		WHERE us.user_id = #{userId} 
+		ORDER BY create_time DESC 
+		LIMIT #{pageSize} OFFSET #{startIndex}
+	</select>
+	
+	<update id="increaseDownloadCount" parameterType="String">
+		UPDATE subtitle 
+		SET download_count = download_count + 1 
+		WHERE subtitle_id = #{subtitleId}
+	</update>
+	
+	<select id="getMostDownloadedSubtitlesOfLastWeek" resultType="Subtitle" resultMap="baseMap">
+		SELECT s.subtitle_id AS subtitle_id, s.subtitle_title AS subtitle_title, 
+			   COUNT(sd.subtitle_download_id) AS download_count
+		FROM subtitle_download sd
+		LEFT JOIN subtitle s ON s.subtitle_id = sd.subtitle_id
+		WHERE sd.download_time > DATE_SUB(CURDATE(), INTERVAL 1 WEEK)
+		GROUP BY sd.subtitle_id
+		ORDER BY COUNT(sd.subtitle_download_id) DESC LIMIT 10;
+	</select>
+
+</mapper>

@@ -1,0 +1,185 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.caizhukui.rrmeiju.mapper.SerialMapper">
+
+	<resultMap id="baseMap" type="Serial">
+		<id property="id" column="id" />
+		<result property="uuid" column="uuid" />
+		<result property="imdbId" column="imdb_id" />
+		<result property="tvmazeId" column="tvmaze_id" />
+		<result property="thetvdbId" column="thetvdb_id" />
+		<result property="tvrageId" column="tvrage_id" />
+		<result property="officialSiteUrl" column="official_site_url" />
+		<result property="chineseSummary" column="chinese_summary" />
+		<result property="englishSummary" column="english_summary" />
+		<result property="language" column="language" />
+		<result property="originalName" column="original_name" />
+		<result property="englishName" column="english_name" />
+		<result property="chineseName" column="chinese_name" />
+		<result property="chineseAlias" column="chinese_alias" />
+		<result property="epguidesName" column="epguides_name" />
+		<result property="scheduleDays" column="schedule_days" />
+		<result property="scheduleTime" column="schedule_time" />
+		<result property="tvmazeMediumImageUrl" column="tvmaze_medium_image_url" />
+		<result property="tvmazeOriginalImageUrl" column="tvmaze_original_image_url" />
+		<result property="chineseGenres" column="chinese_genres" />
+		<result property="englishGenres" column="english_genres" />
+		<result property="chineseStatus" column="chinese_status" />
+        <result property="englishStatus" column="english_status" />
+        <result property="chineseType" column="chinese_type" />
+        <result property="englishType" column="english_type" />
+        <result property="runtime" column="runtime" />
+		<result property="televisionUuid" column="television_uuid" />
+		<result property="finished" column="finished" />
+		<result property="tvmazeUrl" column="tvmaze_url" />
+		<result property="tvmazeAverageRating" column="tvmaze_average_rating" />
+		<result property="tvmazeUpdatedTimestamp" column="tvmaze_updated_timestamp" />
+		<result property="tvmazeWeight" column="tvmaze_weight" />
+		<result property="premiereDate" column="premiere_date" />
+		<result property="gmtCreate" column="gmt_create" />
+		<result property="gmtModified" column="gmt_modified" />
+		<association property="television" resultMap="com.caizhukui.rrmeiju.mapper.TelevisionMapper.baseMap" />
+		<collection property="seasons" ofType="Season" resultMap="com.caizhukui.rrmeiju.mapper.SeasonMapper.baseMap" />
+	</resultMap>
+	
+	<select id="getByUuidAssociation" parameterType="String" resultType="Serial" resultMap="baseMap">
+        SELECT sr.*, t.*, sa.* FROM serial sr
+        LEFT OUTER JOIN television t ON sr.television_uuid = t.uuid
+        LEFT OUTER JOIN season sa ON sr.uuid = sa.serial_uuid
+        WHERE sr.uuid = #{uuid}
+    </select>
+	
+	<select id="getByUserUuid" parameterType="String" resultType="Serial" resultMap="baseMap">
+		SELECT * FROM serial s
+		INNER JOIN user_serial r ON s.uuid = r.serial_uuid
+		WHERE r.user_uuid = #{userUuid}
+	</select>
+	
+	<select id="getByTelevisionUuid" parameterType="String" resultType="Serial" resultMap="baseMap">
+		SELECT * FROM serial WHERE television_uuid = #{televisionUuid}
+	</select>
+	
+	<insert id="add" parameterType="Serial">
+		INSERT INTO serial(uuid, english_name, chinese_name, television_uuid, finished)
+		VALUES(#{uuid}, #{englishName}, #{chineseName}, #{televisionUuid}, #{finished})
+	</insert>
+	
+	<update id="updateByUuid" parameterType="Serial">
+		UPDATE serial 
+		<trim prefix="SET" suffixOverrides=",">
+		    <if test="imdbId != null and imdbId != ''">
+                imdb_id = #{imdbId},
+            </if>
+            <if test="tvmazeId != null">
+                tvmaze_id = #{tvmazeId},
+            </if>
+            <if test="thetvdbId != null">
+                thetvdb_id = #{thetvdbId},
+            </if>
+            <if test="tvrageId != null">
+                tvrage_id = #{tvrageId},
+            </if>
+            <if test="officialSiteUrl != null and officialSiteUrl != ''">
+                official_site_url = #{officialSiteUrl},
+            </if>
+            <if test="chineseSummary != null and chineseSummary != ''">
+                chinese_summary = #{chineseSummary},
+            </if>
+            <if test="englishSummary != null and englishSummary != ''">
+                english_summary = #{englishSummary},
+            </if>
+            <if test="language != null and language != ''">
+                language = #{language},
+            </if>
+            <if test="originalName != null and originalName != ''">
+                original_name = #{originalName},
+            </if>
+			<if test="englishName != null and englishName != ''">
+				english_name = #{englishName},
+			</if>
+			<if test="chineseName != null and chineseName != ''">
+				chinese_name = #{chineseName},
+			</if>
+			<if test="chineseAlias != null and chineseAlias != ''">
+                chinese_alias = #{chineseAlias},
+            </if>
+			<if test="epguidesName != null and epguidesName != ''">
+				epguides_name = #{epguidesName},
+			</if>
+			<if test="scheduleDays != null and scheduleDays != ''">
+                schedule_days = #{scheduleDays},
+            </if>
+            <if test="scheduleTime != null and scheduleTime != ''">
+                schedule_time = #{scheduleTime},
+            </if>
+            <if test="tvmazeMediumImageUrl != null and tvmazeMediumImageUrl != ''">
+                tvmaze_medium_image_url = #{tvmazeMediumImageUrl},
+            </if>
+            <if test="tvmazeOriginalImageUrl != null and tvmazeOriginalImageUrl != ''">
+                tvmaze_original_image_url = #{tvmazeOriginalImageUrl},
+            </if>
+            <if test="chineseGenres != null and chineseGenres != ''">
+                chinese_genres = #{chineseGenres},
+            </if>
+            <if test="englishGenres != null and englishGenres != ''">
+                english_genres = #{englishGenres},
+            </if>
+            <if test="chineseStatus != null and chineseStatus != ''">
+                chinese_status = #{chineseStatus},
+            </if>
+            <if test="englishStatus != null and englishStatus != ''">
+                english_status = #{englishStatus},
+            </if>
+            <if test="chineseType != null and chineseType != ''">
+                chinese_type = #{chineseType},
+            </if>
+            <if test="englishType != null and englishType != ''">
+                english_type = #{englishType},
+            </if>
+            <if test="runtime != null and runtime > 0">
+                runtime = #{runtime},
+            </if>
+			<if test="televisionUuid != null and televisionUuid != ''">
+				television_uuid = #{televisionUuid},
+			</if>
+			<if test="finished != null">
+                finished = #{finished},
+            </if>
+            <if test="tvmazeUrl != null and tvmazeUrl != ''">
+                tvmaze_url = #{tvmazeUrl},
+            </if>
+            <if test="tvmazeAverageRating != null">
+                tvmaze_average_rating = #{tvmazeAverageRating},
+            </if>
+            <if test="tvmazeUpdatedTimestamp != null">
+                tvmaze_updated_timestamp = #{tvmazeUpdatedTimestamp},
+            </if>
+            <if test="tvmazeWeight != null">
+                tvmaze_weight = #{tvmazeWeight},
+            </if>
+            <if test="premiereDate != null">
+                premiere_date = #{premiereDate},
+            </if>
+            <if test="gmtModified != null">
+                gmt_modified = #{gmtModified},
+            </if>
+		</trim>
+		WHERE uuid = #{uuid}
+	</update>
+	
+	<insert id="followSerial" parameterType="String">
+		INSERT INTO user_serial(user_uuid, serial_uuid)
+		VALUES(#{userUuid}, #{serialUuid})
+	</insert>
+	
+	<delete id="cancelFollowSerial" parameterType="String">
+		DELETE FROM user_serial WHERE user_uuid = #{userUuid} AND serial_uuid = #{serialUuid}
+	</delete>
+	
+	<select id="getFollowSerialCount" parameterType="String" resultType="int">
+		SELECT COUNT(*) FROM user_serial
+		WHERE user_uuid = #{userUuid} AND serial_uuid = #{serialUuid}
+	</select>
+
+</mapper>

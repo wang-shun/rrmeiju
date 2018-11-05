@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.caizhukui.rrmeiju.mapper.TelevisionMapper">
+
+	<resultMap id="baseMap" type="Television" extends="com.caizhukui.rrmeiju.mapper.base.BaseMapper.baseMap">
+		<result property="televisionName" column="television_name" />
+		<result property="televisionInfo" column="television_info" />
+		<result property="homepageUrl" column="homepage_url" />
+		<result property="logoUrl" column="logo_url" />
+        <collection property="serials" javaType="ArrayList" column="uuid" ofType="Serial" select="com.caizhukui.rrmeiju.mapper.SerialMapper.getByTelevisionUuid" />
+	</resultMap>
+	
+	<select id="getAllTelevisionNames" resultType="String">
+		SELECT television_name FROM television ORDER BY television_name;
+	</select>
+	
+	<!-- ECharts statistical data -->
+	<select id="getAllTelevisionSerialCount" resultType="java.util.HashMap">
+		SELECT t.television_name AS name, COUNT(s.uuid) AS value
+		FROM television t, serial s
+		WHERE t.uuid = s.television_uuid
+		GROUP BY s.television_uuid
+	</select>
+	
+</mapper>

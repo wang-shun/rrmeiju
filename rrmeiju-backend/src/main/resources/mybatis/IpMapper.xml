@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.caizhukui.rrmeiju.mapper.IpMapper">
+
+	<resultMap id="baseMap" type="Ip">
+		<id property="ipId" column="ip_id" />
+		<result property="ip" column="ip" />
+		<result property="country" column="country" />
+		<result property="province" column="province" />
+		<result property="city" column="city" />
+		<result property="operator" column="operator" />
+	</resultMap>
+	
+	<select id="getByIp" parameterType="String" resultType="com.caizhukui.rrmeiju.model.Ip" resultMap="baseMap">
+		SELECT * FROM ip WHERE ip = #{ip}
+	</select>
+	
+</mapper>

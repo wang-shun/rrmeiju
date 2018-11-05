@@ -1,0 +1,110 @@
+用户角色：user/admin/author
+--------------------------------------------
+编码规范：
+打log使用SLF4J而不是直接使用Log4J
+正确：private static final Logger logger = LoggerFactory.getLogger(SerialRestController.class);
+错误：private static final Log log = 
+工具类都优先使用Spring自带的：
+StringUtils优先使用org.springframework.util.StringUtils而不是org.apache.commons.lang3.StringUtils
+--------------------------------------------
+提示语：说明要求而不是描述事实
+示例：
+正确：Parameter serialName cannot be empty.
+错误：Parameter serialName is empty.
+--------------------------------------------
+DTO只应出现在Controller层，不要传递到Service层；
+缓存到Redis的对象是Entity(Model)而不是DTO；
+--------------------------------------------
+DTO中的属性全部使用对象类型（不使用基本类型），默认值都为null；
+--------------------------------------------
+RESTful接口需要支持的查询功能：
+1.通过resultFields参数设置查询的字段；
+2.通过pageIndex和pageSize参数分页查询；
+3.通过filterFields设置过滤的字段；
+4.通过orderFields参数设置排序的字段，默认正序，在字段前添加-表示倒序；
+SearchCriteriaDto和SearchCriteriaBo
+
+根据自身ID查询使用@PathVariable，根据其它条件查询使用@RequestParam
+
+DTO里的参数名尽量简短
+
+保存数据时不要依赖数据库自动生成，比如说常见的uuid和create_time字段。
+使用程序生成的好处是可以在实际插入数据库之前返回结果给客户端，数据库操作异步执行。
+
+The Day Will Come When You Won't Be
+
+OSS用户：
+AccessKeyId：LTAInqza995DidIS
+AccessKeySecret：4nRbTfVqe0qrzAymffZLmDjDyy0LnE
+
+使用MyBatis时要防止SQL注入攻击
+
+http://localhost:8080/rrmeiju-backend/televisions?queryParam1=xxx&queryParam2=xxx
+http://localhost:8080/rrmeiju-backend/televisions/:televisionId/serials
+
+http://localhost:8080/rrmeiju-backend/captcha?mobileNumber=13626270072
+
+http://open.taobao.com/doc2/apiDetail.htm?apiId=128
+
+http://www.javatpoint.com
+
+// SQL转义，预防SQL注入
+StringEscapeUtils.escapeSql(sql);
+
+http://localhost:8080/rrmeiju-backend/televisions?resultFields=television_name,television_info&orderFields=television_name,-television_id&filterFields=television_name,television_info&keyword=AA
+
+对HTTP 304的理解
+
+待实现功能：
+1.动态修改LOG的输出等级、清空LOG等
+2.
+
+nginx + proxy + tomcat
+nginx + apache + jk + tomcat
+
+Jetty/Resin/Tomcat/JBoss/WebLogic
+Apache/Nginx/
+
+RESTful接口数据统计：
+CREATE TABLE api_record(
+api_code VARCHAR(100) NOT NULL UNIQUE,
+api_uri VARCHAR(500) UNIQUE,
+client_ip VARCHAR(20)
+timestamp TIMESTAMP
+)
+
+
+
+
+OSS文件结构设计：
+BucketName：ustvseries
+字幕存放路径：subtitle，按上传日期分
+
+待实现功能：
+2. 完善用户注册和登录模块
+3. 优化上传字幕文件的客户体验：
+  1. 增加一些tips
+  2. 把“全X集”跟“第X集”分开
+4. 优化首页（改善小屏体验）
+5. 优化按季查看字幕页面（增加背景图片，JS动态加载）
+6. 定时清空前一天上传的文件
+7. 注册的时候修改为前端跳转
+
+需要防止被刷的接口：
+1. 发送验证码
+2. 用户登录
+3. 用户注册
+
+待实现功能：
+0. 分享字幕到新浪微博
+1. 统计没有集的系列信息时，剔除还未播出的系列；
+2. 统计数据页面
+	1. 最近7天字幕上传数折线图
+
+3. 资源页面定时更换
+http://www.ustvseries.cn/video?accessCode=xxxxxxxxx
+uuid保存在Redis缓存中，定时任务每天零点更新uuid，用户可以在微信公众号里回复“资源”获取当前的uuid，以用来访问资源搜索页面。
+微信公众号里不是返回uuid，而是返回完整的URL
+
+页面已失效，请在微信公众号中回复“资源”获取最新地址
+

@@ -1,0 +1,5 @@
+类在Java虚拟机中的生命周期分为以下七个阶段：加载（Loading）、验证（Verification）、准备（Preparation）、解析（Resolution）、初始化（Initialization）、使用（Using）和卸载（Unloading），其中验证、准备和解析三个阶段被统称为连接（Linking）。
+大部分Java虚拟机在验证阶段都会进行以下四个方面的检验：文件格式验证、元数据验证、字节码验证和符号引用验证。
+Java中对象的引用分为以下四种：强引用（Strong Reference）、软引用（Soft Reference）、弱引用（Weak Reference）和虚引用（Phantom Reference），这四种引用强度依次减弱。
+Java为线程定义了以下五个状态：新建（New）、运行（Runable）、无限期等待（Waiting）、限期等待（Timed Waiting）、阻塞（Blocked）和结束（Terminated）。
+互斥同步（Mutual Exclusion & Synchronization）是最常见的并发正确性保障手段，临界区（Critical Section）、互斥量（Mutex）和信号量（Semaphore）是主要的互斥实现方式。

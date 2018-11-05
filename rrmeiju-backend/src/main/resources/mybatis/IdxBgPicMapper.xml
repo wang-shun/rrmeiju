@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.caizhukui.rrmeiju.mapper.IdxBgPicMapper">
+
+	<resultMap id="baseMap" type="IdxBgPic">
+		<result property="fileUrl" column="file_url" />
+	</resultMap>
+	
+	<select id="getByFileUrl" parameterType="String" resultType="IdxBgPic" resultMap="baseMap">
+		SELECT file_id, file_url 
+		FROM idx_bg_pic
+		WHERE file_url = #{fileUrl}
+	</select>
+	
+	<select id="getByRandom" parameterType="int" resultType="IdxBgPic" resultMap="baseMap">
+		SELECT file_id, file_url 
+		FROM idx_bg_pic 
+		ORDER BY RAND() LIMIT #{count}
+	</select>
+
+</mapper>

@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<data-sources>
+	<data-source id="mysql5-160d89a4530-33fb93d22177a280" provider="mysql" driver="mysql5" name="Ustvseries-RDS" save-password="true" show-system-objects="true" read-only="false">
+		<connection host="jdbc:mysql://ustvseries.mysql.rds.aliyuncs.com" port="3838" server="" database="rrmeiju" url="jdbc:mysql://jdbc:mysql://ustvseries.mysql.rds.aliyuncs.com:3838/rrmeiju" user="root" password="QhUHOmF0dy5l8w==" home="C:\Program Files\MySQL\MySQL Server 5.7" type="prod" keepAlive="120">
+			<network-handler type="TUNNEL" id="ssh_tunnel" enabled="false" save-password="false">
+				<property name="sshConnectTimeout" value="10000"/>
+				<property name="port" value="22"/>
+				<property name="authType" value="PASSWORD"/>
+			</network-handler>
+			<network-handler type="PROXY" id="socks_proxy" enabled="false" save-password="false">
+				<property name="socks-port" value="1080"/>
+			</network-handler>
+			<network-handler type="CONFIG" id="mysql_ssl" enabled="false" save-password="false">
+				<property name="ssl.public.key.retrieve" value="false"/>
+				<property name="ssl.verify.server" value="true"/>
+				<property name="ssl.require" value="false"/>
+			</network-handler>
+			<bootstrap autocommit="false"/>
+		</connection>
+	</data-source>
+	<filters/>
+</data-sources>

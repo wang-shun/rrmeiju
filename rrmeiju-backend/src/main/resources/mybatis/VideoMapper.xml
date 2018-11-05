@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.caizhukui.rrmeiju.mapper.VideoMapper">
+
+	<resultMap id="baseMap" type="Video">
+		<id property="id" column="id" />
+		<result property="uuid" column="uuid" />
+		<result property="videoTitle" column="video_title" />
+		<result property="videoUrl" column="video_url" />
+		<result property="subtitleLang" column="subtitle_lang" />
+		<result property="videoFormat" column="video_format" />
+		<result property="videoSource" column="video_source" />
+		<result property="episodeUuid" column="episode_uuid" />
+		<result property="seasonUuid" column="season_uuid" />
+		<result property="userUuid" column="user_uuid" />
+		<result property="fansubUuid" column="fansub_uuid" />
+		<result property="remark" column="remark" />
+		<result property="viewCount" column="view_count" />
+		<result property="uploadTime" column="upload_time" />
+		<result property="deleted" column="deleted" />
+		<result property="gmtCreate" column="gmt_create" />
+        <result property="gmtModified" column="gmt_modified" />
+	</resultMap>
+	
+	<select id="getByEpisodeUuid" parameterType="String" resultType="Video" resultMap="baseMap">
+		SELECT * FROM video WHERE episode_uuid = #{episodeUuid}
+	</select>
+	
+	<select id="getBySerialNameAndIndex" parameterType="java.lang.Object" resultType="Video" resultMap="baseMap">
+		SELECT v.* FROM video v, episode e, season sn, serial sl
+		WHERE v.episode_uuid = e.uuid
+		AND e.episode_index = #{episodeIndex}
+		AND e.season_uuid = sn.uuid
+		AND sn.season_index = #{seasonIndex}
+		AND sn.serial_uuid = sl.uuid
+		AND (sl.chinese_name LIKE '%${serialName}%' 
+			OR sl.chinese_alias LIKE '%${serialName}%' 
+			OR sl.english_name LIKE '%${serialName}%')
+	</select>
+	
+</mapper>

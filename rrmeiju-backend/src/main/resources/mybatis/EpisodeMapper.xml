@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.caizhukui.rrmeiju.mapper.EpisodeMapper">
+
+	<resultMap id="baseMap" type="Episode">
+	    <id property="id" column="id" />
+		<result property="uuid" column="uuid" />
+		<result property="tvmazeShowId" column="tvmaze_show_id" />
+		<result property="seasonIndex" column="season_index" />
+		<result property="episodeIndex" column="episode_index" />
+		<result property="episodeName" column="episode_name" />
+		<result property="englishSummary" column="english_summary" />
+		<result property="chineseSummary" column="chinese_summary" />
+		<result property="runtime" column="runtime" />
+		<result property="tvmazeUrl" column="tvmaze_url" />
+		<result property="seasonUuid" column="season_uuid" />
+		<result property="airDate" column="air_date" />
+		<result property="airTime" column="air_time" />
+		<result property="airStamp" column="air_stamp" />
+		<result property="gmtCreate" column="gmt_create" />
+		<result property="gmtModified" column="gmt_modified" />
+		<association property="season" column="season_uuid" javaType="Season" select="com.caizhukui.rrmeiju.mapper.SeasonMapper.getByUuid" />
+		<collection property="subtitles" javaType="ArrayList" column="id" ofType="Subtitle" select="com.caizhukui.rrmeiju.mapper.SubtitleMapper.getByEpisodeUuid" />
+		<collection property="videos" javaType="ArrayList" column="id" ofType="Video" select="com.caizhukui.rrmeiju.mapper.VideoMapper.getByEpisodeUuid" />
+	</resultMap>
+	
+	<select id="getCountBySeasonUuid" parameterType="String" resultType="int">
+		SELECT COUNT(id) FROM episode
+		WHERE season_uuid = #{seasonUuid}
+	</select>
+
+	<select id="getBySeasonUuid" parameterType="String" resultType="Episode" resultMap="baseMap">
+		SELECT * FROM episode WHERE season_uuid = #{seasonUuid}
+	</select>
+	
+	<select id="getBySeasonUuidAndEpisodeIndex" parameterType="java.lang.Object" resultType="Episode" resultMap="baseMap">
+		SELECT * FROM episode WHERE season_uuid = #{seasonUuid} AND episode_index = #{episodeIndex}
+	</select>
+	
+	<insert id="batchAdd" parameterType="Episode">
+        INSERT INTO episode(uuid, tvmaze_show_id, season_index, episode_index, episode_name, season_uuid, air_date, air_time, air_stamp, runtime, english_summary, chinese_summary, tvmaze_url, gmt_create, gmt_modified)
+        VALUES
+        <foreach collection="episodes" item="episode" index="index" open="(" close=")" separator=",">
+            #{episode.uuid}, #{episode.tvmazeShowId}, #{episode.seasonIndex}, #{episode.episodeIndex}, #{episode.episodeName}, 
+            #{episode.seasonUuid}, #{episode.airDate}, #{episode.airTime}, #{episode.airStamp}, #{episode.runtime}, #{episode.englishSummary}, 
+            #{episode.chineseSummary}, #{episode.tvmazeUrl}, #{episode.gmtCreate}, #{episode.gmtModified}
+        </foreach>
+    </insert>
+	
+	<select id="getByAirDate" parameterType="java.util.Date" resultType="Episode" resultMap="baseMap">
+		SELECT uuid, episode_index, episode_name, season_uuid 
+		FROM episode WHERE to_days(air_date) = to_days(#{date})
+	</select>
+
+</mapper>

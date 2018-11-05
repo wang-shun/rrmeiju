@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.caizhukui.rrmeiju.mapper.TelevisionMapper">
+
+	<resultMap id="baseMap" type="Television">
+		<id property="id" column="id" />
+		<result property="uuid" column="uuid" />
+		<result property="televisionName" column="television_name" />
+		<result property="televisionInfo" column="television_info" />
+		<result property="homepageUrl" column="homepage_url" />
+		<result property="logoUrl" column="logo_url" />
+		<result property="gmtCreate" column="gmt_create" />
+        <result property="gmtModified" column="gmt_modified" />
+        <collection property="serials" javaType="ArrayList" column="uuid" ofType="Serial" select="com.caizhukui.rrmeiju.mapper.SerialMapper.getByTelevisionUuid" fetchType="lazy" />
+	</resultMap>
+	
+	<select id="getAllTelevisionNames" resultType="String">
+		SELECT television_name FROM television ORDER BY television_name;
+	</select>
+	
+	<!-- ECharts statistical data -->
+	<select id="getAllTelevisionSerialCount" resultType="java.util.HashMap">
+		SELECT t.television_name AS name, COUNT(s.uuid) AS value
+		FROM television t, serial s
+		WHERE t.uuid = s.television_uuid
+		GROUP BY s.television_uuid
+	</select>
+	
+	<insert id="add" parameterType="Television">
+		INSERT INTO television(uuid, television_name, television_info, homepage_url, logo_url)
+		VALUES(#{uuid}, #{televisionName}, #{televisionInfo}, #{homepageUrl}, #{logoUrl})
+	</insert>
+	
+	<update id="updateByUuid" parameterType="Television">
+		UPDATE television
+		<trim prefix="SET" suffixOverrides=",">
+			<if test="televisionName != null">
+				television_name = #{televisionName},
+			</if>
+			<if test="televisionInfo != null">
+				television_info = #{televisionInfo},
+			</if>
+			<if test="homepageUrl != null">
+				homepage_url = #{homepageUrl},
+			</if>
+			<if test="logoUrl != null">
+				logo_url = #{logoUrl},
+			</if>
+		</trim>
+		WHERE uuid = #{uuid}
+	</update>
+	
+</mapper>

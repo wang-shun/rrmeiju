@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.caizhukui.rrmeiju.mapper.FansubMapper">
+
+	<resultMap id="baseMap" type="Fansub">
+		<id property="id" column="id" />
+		<result property="uuid" column="uuid" />
+		<result property="fansubName" column="fansub_name" />
+		<result property="fansubInfo" column="fansub_info" />
+		<result property="foundationYear" column="foundation_year" />
+		<result property="logoUrl" column="logo_url" />
+		<result property="homepageUrl" column="homepage_url" />
+		<result property="weiboUrl" column="weibo_url" />
+		<result property="wechat" column="wechat" />
+		<result property="wechatUrl" column="wechat_url" />
+		<result property="bulletin" column="bulletin" />
+		<result property="gmtCreate" column="gmt_create" />
+        <result property="gmtModified" column="gmt_modified" />
+        <collection property="subtitles" javaType="ArrayList" column="id" ofType="Subtitle" select="com.caizhukui.rrmeiju.mapper.SubtitleMapper.getByFansubUuid" />
+        <collection property="userFansubs" javaType="ArrayList" column="id" ofType="UserFansub" select="com.caizhukui.rrmeiju.mapper.UserFansubMapper.getByFansubUuid" />
+	</resultMap>
+	
+	<select id="getByUserUuid" parameterType="String" resultType="Fansub" resultMap="baseMap">
+		SELECT f.* FROM fansub f
+		INNER JOIN user_fansub r ON f.uuid = r.fansub_uuid
+		WHERE r.user_uuid = #{userUuid}
+	</select>
+	
+	<select id="getBySeasonUuid" parameterType="String" resultType="Fansub" resultMap="baseMap">
+		SELECT DISTINCT f.* FROM subtitle s, fansub f 
+		WHERE s.season_uuid = #{seasonUuid} 
+		AND s.fansub_uuid = f.uuid
+	</select>
+	
+	<insert id="add" parameterType="Fansub">
+		INSERT INTO fansub(uuid, fansub_name, fansub_info, foundation_year, logo_url, homepage_url, weibo_url, wechat, wechat_url, bulletin)
+		VALUES(#{uuid}, #{fansubName}, #{fansubInfo}, #{foundationYear}, #{logoUrl}, #{homepageUrl}, #{weiboUrl}, #{wechat}, #{wechatUrl}, #{bulletin})
+	</insert>
+	
+	<!-- 可以更新的字段：
+		fansubName, 
+		fansubInfo, 
+		foundationYear, 
+		logoUrl, 
+		homepageUrl, 
+		weiboUrl, 
+		wechat, 
+		wechatUrl, 
+		bulletin 
+	-->
+	<update id="updateByUuid" parameterType="Fansub">
+		UPDATE fansub
+		<trim prefix="SET" suffixOverrides=",">
+			<if test="fansubName != null">
+				fansub_name = #{fansubName},
+			</if>
+			<if test="fansubInfo != null and fansubInfo != ''">
+				fansub_info = #{fansubInfo},
+			</if>
+			<if test="foundationYear != null">
+				foundation_year = #{foundationYear},
+			</if>
+			<if test="logoUrl != null">
+				logo_url = #{logoUrl},
+			</if>
+			<if test="homepageUrl != null">
+				homepage_url = #{homepageUrl},
+			</if>
+			<if test="weiboUrl != null">
+				weibo_url = #{weiboUrl},
+			</if>
+			<if test="wechat != null">
+				wechat = #{wechat},
+			</if>
+			<if test="wechatUrl != null">
+				wechat_url = #{wechatUrl},
+			</if>
+			<if test="bulletin != null">
+				bulletin = #{bulletin},
+			</if>
+		</trim>
+		WHERE uuid = #{uuid}
+	</update>
+
+</mapper>

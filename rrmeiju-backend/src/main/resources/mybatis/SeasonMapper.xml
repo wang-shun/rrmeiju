@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.caizhukui.rrmeiju.mapper.SeasonMapper">
+
+	<resultMap id="baseMap" type="Season">
+		<id property="id" column="id" />
+		<result property="uuid" column="uuid" />
+		<result property="englishName" column="english_name" />
+		<result property="chineseName" column="chinese_name" />
+		<result property="serialUuid" column="serial_uuid" />
+		<result property="premiereDate" column="premiere_date" />
+		<result property="episodeCount" column="episode_count" />
+		<result property="seasonIndex" column="season_index" />
+		<result property="posterUrl" column="poster_url" />
+		<result property="finished" column="finished" />
+		<result property="doubanId" column="douban_id" />
+		<result property="doubanUrl" column="douban_url" />
+		<result property="doubanRating" column="douban_rating" />
+		<result property="summary" column="summary" />
+		<result property="directors" column="directors" />
+		<result property="casts" column="casts" />
+		<result property="countries" column="countries" />
+		<result property="genres" column="genres" />
+		<result property="gmtCreate" column="gmt_create" />
+		<result property="gmtModified" column="gmt_modified" />
+	    <association property="serial" column="serial_uuid" javaType="Serial" select="com.caizhukui.rrmeiju.mapper.SerialMapper.getByUuid" />
+        <collection property="episodes" javaType="ArrayList" column="id" ofType="Episode" select="com.caizhukui.rrmeiju.mapper.EpisodeMapper.getBySeasonUuid" />
+	</resultMap>
+	
+	<select id="getCountBySerialUuid" parameterType="String" resultType="int">
+		SELECT COUNT(id) FROM season
+		WHERE serial_uuid = #{serialUuid}
+	</select>
+
+	<select id="getBySerialUuid" parameterType="String" resultType="Season" resultMap="baseMap">
+		SELECT * FROM season WHERE serial_uuid = #{serialUuid}
+		ORDER BY season_index
+	</select>
+	
+	<select id="getByFansubUuid" resultType="Season" resultMap="baseMap">
+		SELECT DISTINCT season.* FROM subtitle, season 
+		WHERE subtitle.fansub_uuid = #{fansubUuid} 
+		AND subtitle.season_uuid = season.uuid 
+		LIMIT #{limit} 
+	</select>
+
+</mapper>

@@ -1,0 +1,32 @@
+安装百度BOS的SDK到本地Maven仓库：
+mvn install:install-file -Dfile=F:\WordNotebook\ThirdPartySDK\bce-java-sdk-0.10.11\lib\bce-java-sdk-0.10.11.jar -DgroupId=com.baidubce -DartifactId=bce-java-sdk -Dversion=0.10.11 -Dpackaging=jar
+
+安装阿里巴巴OSS的SDK到本地Maven仓库：
+mvn install:install-file -Dfile=F:\WordNotebook\ThirdPartySDK\aliyun-sdk-oss-2.3.0.jar -DgroupId=com.aliyun.oss -DartifactId=aliyun-sdk-oss -Dversion=2.3.0 -Dpackaging=jar
+
+mvn install:install-file -Dfile=F:\WordNotebook\ThirdPartySDK\aliyun-sdk-oss-2.4.1.jar -DgroupId=com.aliyun.oss -DartifactId=aliyun-sdk-oss -Dversion=2.4.1 -Dpackaging=jar
+
+安装阿里大于的SDK到本地Maven仓库：
+mvn install:install-file -Dfile=F:\WordNotebook\ThirdPartySDK\sdk-java-2016-06-07\taobao-sdk-java-auto_1455552377940-20160607.jar -DgroupId=com.taobao.api -DartifactId=taobao-sdk-api -Dversion=1455552377940-20160607 -Dpackaging=jar
+
+安装阿里巴巴OTS的SDK到本地Maven仓库：
+mvn install:install-file -Dfile=F:\WordNotebook\ThirdPartySDK\aliyun_tablestore_java_sdk_4.1.0\tablestore-4.1.0.jar -DgroupId=com.aliyun.openservices -DartifactId=tablestore -Dversion=4.1.0 -Dpackaging=jar
+
+安装阿里巴巴SMS的SDK到本地Maven仓库：
+mvn install:install-file -Dfile=F:\WordNotebook\ThirdPartySDK\aliyun-java-sdk-smsV1\aliyun-java-sdk-core-2.4.2.jar -DgroupId=com.aliyun -DartifactId=aliyun-java-sdk-core -Dversion=2.4.2 -Dpackaging=jar
+
+mvn install:install-file -Dfile=F:\WordNotebook\ThirdPartySDK\aliyun-java-sdk-smsV1\aliyun-java-sdk-sms-3.0.0-rc1.jar -DgroupId=com.aliyun -DartifactId=aliyun-java-sdk-sms -Dversion=3.0.0-rc1 -Dpackaging=jar
+
+mvn install:install-file -Dfile=F:\WordNotebook\ThirdPartySDK\poi-ooxml-3.15.jar -DgroupId=org.apache.poi -DartifactId=poi-ooxml -Dversion=3.15 -Dpackaging=jar
+
+安装Lucene相关jar包到本地Maven仓库：
+mvn install:install-file -Dfile=F:\WordNotebook\ThirdPartySDK\lucene-queryparser-6.5.0.jar -DgroupId=org.apache.lucene -DartifactId=lucene-queryparser -Dversion=6.5.0 -Dpackaging=jar
+mvn install:install-file -Dfile=F:\WordNotebook\ThirdPartySDK\lucene-analyzers-common-6.5.0.jar -DgroupId=org.apache.lucene -DartifactId=lucene-analyzers-common -Dversion=6.5.0 -Dpackaging=jar
+mvn install:install-file -Dfile=F:\WordNotebook\ThirdPartySDK\lucene-queries-6.5.0.jar -DgroupId=org.apache.lucene -DartifactId=lucene-queries -Dversion=6.5.0 -Dpackaging=jar
+
+mvn install:install-file -Dfile=F:\WordNotebook\ThirdPartySDK\baidu-api-sdk-java.jar -DgroupId=com.baidu -DartifactId=baidu-api-sdk -Dversion=1.0.0 -Dpackaging=jar
+
+mvn install:install-file -Dfile=D:\sungoin-sms-sdk-1.1.jar -DgroupId=com.sungoin.sms -DartifactId=sungoin-sms-sdk -Dversion=1.1 -Dpackaging=jar
+
+安装QQ互联的SDK到本地Maven仓库：
+mvn install:install-file -Dfile=F:\WordNotebook\ThirdPartySDK\Sdk4J.jar -DgroupId=com.qq.connect -DartifactId=qq-connect-sdk -Dversion=2.0.0 -Dpackaging=jar

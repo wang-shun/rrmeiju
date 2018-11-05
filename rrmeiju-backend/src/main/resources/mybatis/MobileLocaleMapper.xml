@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.caizhukui.rrmeiju.mapper.MobileLocaleMapper">
+
+	<resultMap id="baseMap" type="MobileLocale">
+		<id property="mobileLocaleId" column="mobile_locale_id" />
+		<result property="mobileSegment" column="mobile_segment" />
+		<result property="mobileArea" column="mobile_area" />
+		<result property="province" column="province" />
+		<result property="city" column="city" />
+		<result property="mobileType" column="mobile_type" />
+		<result property="operator" column="operator" />
+		<result property="areaCode" column="area_code" />
+		<result property="postCode" column="post_code" />
+	</resultMap>
+
+</mapper>

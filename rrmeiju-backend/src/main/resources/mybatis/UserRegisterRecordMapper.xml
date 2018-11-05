@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.caizhukui.rrmeiju.mapper.UserRegisterRecordMapper">
+
+	<resultMap id="baseMap" type="UserRegisterRecord">
+		<id property="id" column="id" />
+		<result property="uuid" column="uuid" />
+		<result property="userName" column="user_name" />
+		<result property="mobileNumber" column="mobile_number" />
+		<result property="qqOpenid" column="qq_openid" />
+		<result property="weixinOpenid" column="weixin_openid" />
+		<result property="weiboUid" column="weibo_uid" />
+		<result property="baiduUid" column="baidu_uid" />
+		<result property="remoteIp" column="remote_ip" />
+		<result property="registerTime" column="register_time" />
+		<result property="gmtCreate" column="gmt_create" />
+        <result property="gmtModified" column="gmt_modified" />
+	</resultMap>
+	
+	<select id="getTodayCountByRemoteIp" parameterType="String" resultType="int">
+		SELECT COUNT(*) FROM user_register_record 
+		WHERE remote_ip = #{remoteIp} AND to_days(register_time) = to_days(now());
+	</select>
+
+</mapper>

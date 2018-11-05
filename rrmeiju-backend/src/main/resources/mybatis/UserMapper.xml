@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.caizhukui.rrmeiju.mapper.UserMapper">
+
+	<resultMap id="baseMap" type="User">
+		<id property="id" column="id" />
+		<result property="uuid" column="uuid" />
+		<result property="userName" column="user_name" />
+		<result property="qqOpenId" column="qq_openid" />
+		<result property="weixinOpenId" column="weixin_openid" />
+		<result property="weiboUid" column="weibo_uid" />
+		<result property="baiduUid" column="baidu_uid" />
+		<result property="password" column="password" />
+		<result property="nickname" column="nickname" />
+		<result property="sex" column="sex" />
+		<result property="email" column="email" />
+		<result property="mobileNumber" column="mobile_number" />
+		<result property="avatarUrl" column="avatar_url" />
+		<result property="source" column="source" />
+		<result property="createTime" column="create_time" />
+		<result property="accountNonExpired" column="account_non_expired" />
+		<result property="accountNonLocked" column="account_non_locked" />
+		<result property="credentialsNonExpired" column="credentials_non_expired" />
+		<result property="enabled" column="enabled" />
+		<result property="gmtCreate" column="gmt_create" />
+        <result property="gmtModified" column="gmt_modified" />
+	</resultMap>
+	
+	<select id="getAllAdmin" resultType="User" resultMap="baseMap">
+		SELECT user.* FROM user, user_role, role
+		WHERE role.role_name = 'ADMIN'
+		AND user.user_id = user_role.user_id AND user_role.role_id = role.role_id
+	</select>
+	
+	<select id="getCountByUserId" parameterType="String" resultType="int">
+		SELECT COUNT(user_id) FROM user
+		WHERE user_id = #{userId}
+	</select>
+	
+	<select id="getCountByUserName" parameterType="String" resultType="int">
+		SELECT COUNT(user_id) FROM user
+		WHERE user_name = #{userName}
+	</select>
+	
+	<select id="getCountByMobileNumber" parameterType="String" resultType="int">
+		SELECT COUNT(user_id) FROM user
+		WHERE mobile_number = #{mobileNumber}
+	</select>
+	
+	<select id="getByUserName" parameterType="String" resultType="User" resultMap="baseMap">
+		SELECT * FROM user WHERE user_name = #{userName}
+	</select>
+	
+	<select id="getByMobileNumber" parameterType="String" resultType="User" resultMap="baseMap">
+		SELECT * FROM user WHERE mobile_number = #{mobileNumber}
+	</select>
+	
+	<select id="getByEmail" parameterType="String" resultType="User" resultMap="baseMap">
+		SELECT * FROM user WHERE email = #{email}
+	</select>
+	
+	<select id="getByQqOpenId" parameterType="String" resultType="User" resultMap="baseMap">
+		SELECT * FROM user WHERE qq_openid = #{qqOpenId}
+	</select>
+	
+	<select id="getByWeixinOpenId" parameterType="String" resultType="User" resultMap="baseMap">
+		SELECT * FROM user WHERE weixin_openid = #{weixinOpenId}
+	</select>
+	
+	<select id="getByWeiboUid" parameterType="String" resultType="User" resultMap="baseMap">
+		SELECT * FROM user WHERE weibo_uid = #{weiboUid}
+	</select>
+	
+	<select id="getByBaiduUid" parameterType="String" resultType="User" resultMap="baseMap">
+		SELECT * FROM user WHERE baidu_uid = #{baiduUid}
+	</select>
+	
+	<select id="getByUserNameAndPassword" parameterType="String" resultType="User" resultMap="baseMap">
+		SELECT * FROM user WHERE user_name = #{userName} AND password = #{password}
+	</select>
+	
+	<select id="getByFansubId" parameterType="String" resultType="User" resultMap="baseMap">
+		SELECT * FROM user u
+		INNER JOIN user_fansub r ON u.user_id = r.user_id
+		WHERE r.fansub_id = #{fansubId}
+	</select>
+	
+	<insert id="addUserRole" parameterType="String">
+		INSERT INTO user_role(user_id, role_id)
+		VALUES(#{userId}, #{roleId})
+	</insert>
+	
+</mapper>

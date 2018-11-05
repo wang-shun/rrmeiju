@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.caizhukui.rrmeiju.mapper.NewsMapper">
+
+	<resultMap id="baseMap" type="News">
+		<id property="id" column="id" />
+		<result property="uuid" column="uuid" />
+		<result property="newsTitle" column="news_title" />
+		<result property="newsContent" column="news_content" />
+		<result property="keywords" column="keywords" />
+		<result property="userUuid" column="user_uuid" />
+		<result property="seasonUuid" column="season_uuid" />
+		<result property="gmtCreate" column="gmt_create" />
+        <result property="gmtModified" column="gmt_modified" />
+	</resultMap>
+
+</mapper>

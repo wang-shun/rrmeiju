@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.caizhukui.rrmeiju.mapper.UserSerialMapper">
+
+    <resultMap id="baseMap" type="UserSerial" extends="com.caizhukui.rrmeiju.mapper.base.BaseMapper.baseMap">
+        <result property="userUuid" column="user_uuid" />
+        <result property="serialUuid" column="serial_uuid" />
+        <result property="followTime" column="follow_time" />
+        <association property="user" column="user_uuid" javaType="User" select="com.caizhukui.rrmeiju.mapper.UserMapper.getByUuid" />
+        <association property="serial" column="serial_uuid" javaType="Serial" select="com.caizhukui.rrmeiju.mapper.SerialMapper.getByUuid" />
+    </resultMap>
+    
+    <select id="getByUserUuid" parameterType="String" resultType="UserSerial" resultMap="baseMap">
+        SELECT * FROM user_serial WHERE user_uuid = #{userUuid}
+    </select>
+    
+    <select id="getBySerialUuid" parameterType="String" resultType="UserSerial" resultMap="baseMap">
+        SELECT * FROM user_serial WHERE serial_uuid = #{serialUuid}
+    </select>
+    
+    <select id="getCountByUserUuidAndSerialUuid" parameterType="UserSerial" resultType="int">
+        SELECT COUNT(*) FROM user_serial
+        WHERE user_uuid = #{userUuid} AND serial_uuid = #{serialUuid}
+    </select>
+    
+    <delete id="deleteByUserUuidAndSerialUuid" parameterType="UserSerial">
+        DELETE FROM user_serial WHERE user_uuid = #{userUuid} AND serial_uuid = #{serialUuid}
+    </delete>
+    
+</mapper>

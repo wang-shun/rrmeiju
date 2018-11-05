@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.caizhukui.rrmeiju.mapper.SerialMapper">
+
+	<resultMap id="baseMap" type="Serial" extends="com.caizhukui.rrmeiju.mapper.base.BaseMapper.baseMap">
+		<result property="imdbId" column="imdb_id" />
+		<result property="tvmazeId" column="tvmaze_id" />
+		<result property="thetvdbId" column="thetvdb_id" />
+		<result property="tvrageId" column="tvrage_id" />
+		<result property="officialSiteUrl" column="official_site_url" />
+		<result property="chineseSummary" column="chinese_summary" />
+		<result property="englishSummary" column="english_summary" />
+		<result property="language" column="language" />
+		<result property="originalName" column="original_name" />
+		<result property="englishName" column="english_name" />
+		<result property="chineseName" column="chinese_name" />
+		<result property="chineseAlias" column="chinese_alias" />
+		<result property="epguidesName" column="epguides_name" />
+		<result property="scheduleDays" column="schedule_days" />
+		<result property="scheduleTime" column="schedule_time" />
+		<result property="tvmazeMediumImageUrl" column="tvmaze_medium_image_url" />
+		<result property="tvmazeOriginalImageUrl" column="tvmaze_original_image_url" />
+		<result property="chineseGenres" column="chinese_genres" />
+		<result property="englishGenres" column="english_genres" />
+		<result property="chineseStatus" column="chinese_status" />
+        <result property="englishStatus" column="english_status" />
+        <result property="chineseType" column="chinese_type" />
+        <result property="englishType" column="english_type" />
+        <result property="runtime" column="runtime" />
+		<result property="televisionUuid" column="television_uuid" />
+		<result property="finished" column="finished" />
+		<result property="tvmazeUrl" column="tvmaze_url" />
+		<result property="tvmazeAverageRating" column="tvmaze_average_rating" />
+		<result property="tvmazeUpdatedTimestamp" column="tvmaze_updated_timestamp" />
+		<result property="tvmazeWeight" column="tvmaze_weight" />
+		<result property="premiereDate" column="premiere_date" />
+		<!-- <association property="television" column="television_uuid" javaType="Television" select="com.caizhukui.rrmeiju.mapper.TelevisionMapper.getByUuid" />
+		<collection property="seasons" javaType="ArrayList" column="id" ofType="Season" select="com.caizhukui.rrmeiju.mapper.SeasonMapper.getBySerialUuid" /> -->
+	</resultMap>
+	
+	<select id="getByUserUuid" parameterType="String" resultType="Serial" resultMap="baseMap">
+		SELECT * FROM serial s
+		INNER JOIN user_serial r ON s.uuid = r.serial_uuid
+		WHERE r.user_uuid = #{userUuid}
+	</select>
+	
+	<select id="getByTelevisionUuid" parameterType="String" resultType="Serial" resultMap="baseMap">
+		SELECT * FROM serial WHERE television_uuid = #{televisionUuid}
+	</select>
+
+</mapper>

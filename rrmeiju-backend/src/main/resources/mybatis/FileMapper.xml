@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.caizhukui.rrmeiju.mapper.FileMapper">
+
+	<resultMap id="baseMap" type="UploadFile">
+		<id property="id" column="id" />
+		<result property="uuid" column="uuid" />
+		<result property="fileName" column="file_name" />
+		<result property="fileSize" column="file_size" />
+		<result property="fileObjectKey" column="file_object_key" />
+		<result property="fileLocalUrl" column="file_local_url" />
+		<result property="fileBosUrl" column="file_bos_url" />
+		<result property="fileOssUrl" column="file_oss_url" />
+		<result property="fileCosUrl" column="file_cos_url" />
+		<result property="fileQiniuUrl" column="file_qiniu_url" />
+		<result property="fileUpyunUrl" column="file_upyun_url" />
+		<result property="createTime" column="create_time" />
+	</resultMap>
+
+</mapper>

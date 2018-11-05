@@ -1,0 +1,423 @@
+@Scheduled(fixedDelayString = "${retrieveEpisodeInfo.fixedDelay}", initialDelayString = "${retrieveEpisodeInfo.initialDelay}")
+fixedDelay.retrieveEpisodeInfo=43200000
+initialDelay.retrieveEpisodeInfo=5000
+
+<c:url var="loginUrl" value="login"></c:url>
+<form action="${loginUrl}" method="post" class="form-horizontal">
+
+<c:url var="registerUrl" value="register"></c:url>
+<form id="registerForm" action="${registerUrl}" method="post" class="form-horizontal">
+
+<a href="/subtitles/share/weibo?subtitleId=${subtitleFileInfo.subtitleId}" target="_blank">
+							<i class="fa fa-weibo" aria-hidden="true"></i> 分享到微博
+						</a>
+data-disabled="qq,wechat,tencent,linkedin,diandian,google,twitter,facebook" 
+
+<!-- <option value="1">第一季</option>
+<option value="2">第二季</option>
+<option value="3">第三季</option>
+<option value="4">第四季</option>
+<option value="5">第五季</option>
+<option value="6">第六季</option>
+<option value="7">第七季</option>
+<option value="8">第八季</option>
+<option value="9">第九季</option>
+<option value="10">第十季</option>
+<option value="11">第十一季</option>
+<option value="12">第十二季</option>
+<option value="13">第十三季</option>
+<option value="14">第十四季</option>
+<option value="15">第十五季</option>
+<option value="16">第十六季</option>
+<option value="17">第十七季</option>
+<option value="18">第十八季</option>
+<option value="19">第十九季</option>
+<option value="20">第二十季</option> -->
+
+<!-- <option value="1">第1集</option>
+<option value="2">第2集</option>
+<option value="3">第3集</option>
+<option value="4">第4集</option>
+<option value="5">第5集</option>
+<option value="6">第6集</option>
+<option value="7">第7集</option>
+<option value="8">第8集</option>
+<option value="9">第9集</option>
+<option value="10">第10集</option>
+<option value="11">第11集</option>
+<option value="12">第12集</option>
+<option value="13">第13集</option>
+<option value="14">第14集</option>
+<option value="15">第15集</option>
+<option value="16">第16集</option>
+<option value="17">第17集</option>
+<option value="18">第18集</option>
+<option value="19">第19集</option>
+<option value="20">第20集</option>
+<option value="21">第21集</option>
+<option value="22">第22集</option>
+<option value="23">第23集</option>
+<option value="24">第24集</option>
+<option value="25">第25集</option>
+<option value="26">第26集</option> -->
+
+/**
+ * 把Date类型的时间转换成显示在页面上的时间字符串
+ * 
+ * @param createTime
+ * @return String 显示在页面上的时间字符串
+ * @author caizhukui
+ * @date 2017年1月25日下午3:47:24
+ */
+private String convertUploadTime(Date createTime) {
+	Calendar calendar = Calendar.getInstance();
+	calendar.setTime(new Date());
+	int nowYear = calendar.get(Calendar.YEAR);
+	int nowMonth = calendar.get(Calendar.MONTH);
+	int nowDay = calendar.get(Calendar.DAY_OF_MONTH);
+	int nowHour = calendar.get(Calendar.HOUR_OF_DAY);
+	int nowMinute = calendar.get(Calendar.MINUTE);
+	calendar.setTime(createTime);
+	int uploadYear = calendar.get(Calendar.YEAR);
+	int uploadMonth = calendar.get(Calendar.MONTH);
+	int uploadDay = calendar.get(Calendar.DAY_OF_MONTH);
+	int uploadHour = calendar.get(Calendar.HOUR_OF_DAY);
+	int uploadMinute = calendar.get(Calendar.MINUTE);
+	int year = nowYear - uploadYear;
+	if (year > 0) {
+		return year + "年前";
+	} 
+	int month = nowMonth - uploadMonth;
+	if (month > 0) {
+		return month + "月前";
+	}
+	int day = nowDay - uploadDay;
+	if (day > 0) {
+		return day + "天前";
+	}
+	int hour = nowHour - uploadHour;
+	if (hour > 0) {
+		return hour + "小时前";
+	}
+	int minute = nowMinute - uploadMinute;
+	if (minute > 0) {
+		return minute + "分钟前";
+	}
+	return "刚刚";
+}
+
+// 上传字幕文件出错forward过来时，model里有key为subtitle的值；直接访问时没有
+		if (!model.containsAttribute("subtitle")) {
+			model.addAttribute("subtitle", new SubtitleDto());
+		}
+
+model.addAttribute("subtitle", subtitleDto);
+
+/**
+	 * 保存文件到本地
+	 * 方法缺点：如果文件夹不存在会报错，不会自动创建文件夹
+	 * 
+	 * @param file 待保存的文件
+	 * @param filePath 保存的路径
+	 * @author caizhukui
+	 * @throws IOException 
+	 * @date 2016年10月18日下午3:16:04
+	 */
+	private void saveFileToLocal(MultipartFile file, String filePath) throws IOException {
+		byte[] bytes = file.getBytes();
+		File localFile = new File(filePath);
+		BufferedOutputStream outputStream = new BufferedOutputStream(new FileOutputStream(localFile));
+		outputStream.write(bytes);
+		outputStream.close();
+	}
+
+// 用户名输入框失去焦点时触发
+	$('#username').blur(function() {
+		var userName = $('#username').val();
+		if (!/^[a-zA-Z0-9_-]{6,10}$/.test(userName)) {
+			$('#err-modal-msg').text("账号只能包含字母、数字、下划线和连字符，长度在6到10位之间");
+			$('#err-modal').modal('show');
+			return false;
+		}
+		$.ajax({
+			url: '/sendCaptcha?mobileNumber=' + mobileNumber,
+			async: true
+		});
+	});
+
+@Override
+	public void handleError(ClientHttpResponse response) throws IOException {
+		String body = IOUtils.toString(response.getBody(), "UTF-8");
+		RestErrorDto restErrorDto = convert(body, RestErrorDto.class);
+		throw new RestException(restErrorDto);
+	}
+
+<!-- 手机号登录表单 -->
+					<form action="/login" method="post" id="mobile-login-form" class="form-horizontal form-login" style="display:none;">
+						<div class="form-group">
+							<div class="col-sm-12">
+		      					<input type="text" class="form-control input-lg" name="mobileNumber" id="mobile-number" placeholder="手机号" required>
+		    				</div>
+						</div>
+						<div class="form-group">
+					    	<div class="col-sm-12">
+					      		<input type="text" class="form-control input-lg" id="captcha" name="captcha" placeholder="验证码" required>
+					    	</div>
+					  	</div>
+					  	<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
+					  	<div class="form-group">
+						    <div class="col-sm-12">
+						    	<input type="submit" class="btn btn-block btn-primary btn-default" value="登录">
+						    </div>
+						</div>
+						<div class="form-group">
+							<div class="col-sm-12" style="padding:0;">
+								<span class="red">${SPRING_SECURITY_LAST_EXCEPTION.message}</span>
+								<a href="/register" class="pull-right">没有账号？注册一个</a>
+							</div>
+					  	</div>
+					</form>
+
+user-service-ref="customUserDetailsService"
+ 
+ 	<password-encoder ref="bcryptEncoder" />
+		</authentication-provider>
+
+/**
+	 * 分页查询某一用户上传的所有字幕
+	 * 
+	 * @param userId 用户ID
+	 * @param pageSize 每页记录数
+	 * @param pageIndex 第几页
+	 * @return SubtitlePaginatedDto
+	 * @author caizhukui
+	 * @date 2017年6月14日下午3:12:19
+	 */
+	@RequestMapping(value = "/users/{userId}/upload/subtitles", method = RequestMethod.GET)
+	public SubtitlePaginatedDto getUserUploadSubtitles(@PathVariable String userId,
+			@RequestParam(required = false) String pageSize, @RequestParam(required = false) String pageIndex) {
+		logger.info("getUserUploadSubtitles - userId = {}, pageSize = {}, pageIndex = {}", userId, pageSize, pageIndex);
+		// 校验用户ID
+		if (UuidUtil.isInvalidUuid(userId)) {
+			String developerMessage = "用户ID '" + userId + "' 无效";
+			logger.info(developerMessage);
+			throw new InvalidParameterException(RestError.PARAMETER_NOT_SATISFIED.setDeveloperMessage(developerMessage));
+		}
+		// 校验分页参数
+		int pageSizeInt = 20, pageIndexInt = 1;
+		try {
+			pageSizeInt = Integer.valueOf(pageSize);
+			pageIndexInt = Integer.valueOf(pageIndex);
+		} catch (NumberFormatException ignore) {
+			logger.info("转换分页参数出错，使用默认的分页参数 - pageSize = {}, pageIndex = {}", pageSizeInt, pageIndexInt);
+		}
+		List<Subtitle> subtitles = serviceFacade.getSubtitleService().getUserUploadSubtitlesPaginated(userId, pageSizeInt, pageIndexInt);
+		SubtitlePaginatedDto subtitlePaginationDto = new SubtitlePaginatedDto();
+		subtitlePaginationDto.setSubtitles(convertSubtitle(subtitles));
+    	return subtitlePaginationDto;
+	}
+
+/**
+	 * 分页查询某一用户上传的所有字幕
+	 * 
+	 * @param userId 用户ID
+	 * @param pageSize 每页记录数
+	 * @param pageIndex 第几页
+	 * @return List<Subtitle>
+	 * @author caizhukui
+	 * @date 2017年6月14日下午3:15:03
+	 */
+	List<Subtitle> getUserUploadSubtitlesPaginated(String userId, int pageSize, int pageIndex);
+
+/**
+	 * (non-Javadoc)
+	 * @see com.caizhukui.rrmeiju.service.ISubtitleService#getUserUploadSubtitlesPaginated(java.lang.String, int, int)
+	 */
+	@Override
+	public List<Subtitle> getUserUploadSubtitlesPaginated(String userId, int pageSize, int pageIndex) {
+		int startIndex = (pageIndex - 1) * pageSize;
+		List<Subtitle> subtitles = subtitleDao.getUserUploadSubtitlesPaginated(userId, pageSize, startIndex);
+		return subtitles;
+	}
+
+	/**
+	 * 分页查询某一用户上传的所有字幕
+	 * 
+	 * @param userId 用户ID
+	 * @param pageSize 每页记录数
+	 * @param startIndex 第几页
+	 * @return List<Subtitle>
+	 * @author caizhukui
+	 * @date 2017年6月14日下午3:54:43
+	 */
+	List<Subtitle> getUserUploadSubtitlesPaginated(@Param("userId") String userId, @Param("pageSize") int pageSize, @Param("startIndex") int startIndex);
+	
+
+	<select id="getTodayAirEpisodes" parameterType="String" resultType="com.caizhukui.rrmeiju.model.Episode" resultMap="episodeMap">
+		SELECT * FROM episode WHERE to_days(air_date) = to_days(now())
+	</select>
+
+/**
+	 * 查询当天播出的剧集
+	 * 
+	 * @return List<Episode>
+	 * @author caizhukui
+	 * @date 2017年6月7日下午6:35:41
+	 */
+	List<Episode> getTodayAirEpisodes();
+
+/**
+	 * 查询当天播出的剧集
+	 * 
+	 * @return List<Episode>
+	 * @author caizhukui
+	 * @date 2017年6月7日下午6:47:12
+	 */
+	List<Episode> getTodayAirEpisodes();
+	
+
+/**
+	 * (non-Javadoc)
+	 * @see com.caizhukui.rrmeiju.service.IEpisodeService#getTodayAirEpisodes()
+	 */
+	@Override
+	public List<Episode> getTodayAirEpisodes() {
+		List<Episode> episodes = episodeDao.getTodayAirEpisodes();
+		if (episodes == null) {
+			episodes = new ArrayList<Episode>();
+		}
+		return episodes;
+	}
+
+// 利用accessToken和openID获取用户在Qzone的昵称等信息
+                UserInfo qzoneUserInfo = new UserInfo(accessToken, openID);
+                UserInfoBean userInfoBean = qzoneUserInfo.getUserInfo();
+                if (userInfoBean.getRet() == 0) {
+                    String nickName = userInfoBean.getNickname();
+                    String gender = userInfoBean.getGender();
+                    logger.info("黄钻等级： " + userInfoBean.getLevel());
+                    logger.info("会员 : " + userInfoBean.isVip());
+                    logger.info("黄钻会员： " + userInfoBean.isYellowYearVip());
+                    logger.info(userInfoBean.getAvatar().getAvatarURL30());
+                    logger.info(userInfoBean.getAvatar().getAvatarURL50());
+                    logger.info(userInfoBean.getAvatar().getAvatarURL100());
+                } else {
+                	logger.info("很抱歉，我们没能正确获取到您的信息，原因是： {}", userInfoBean.getMsg());
+                }
+
+AuthorityUtils.createAuthorityList("ROLE_USER")
+
+alter table cm_sequence comment '公共的序列表，用于为非自增且要求唯一的字段记录和获取唯一ID。';
+
+<!-- 推荐到豆瓣按钮 -->
+		        <li>
+		        	<a href="javascript:void(function(){var d=document,e=encodeURIComponent,s1=window.getSelection,s2=d.getSelection,s3=d.selection,s=s1?s1():s2?s2():s3?s3.createRange().text:'',r='https://www.douban.com/recommend/?url='+e(d.location.href)+'&title='+e(d.title)+'&sel='+e(s)+'&v=1',w=450,h=330,x=function(){if(!window.open(r,'douban','toolbar=0,resizable=1,scrollbars=yes,status=1,width='+w+',height='+h+',left='+(screen.width-w)/2+',top='+(screen.height-h)/2))location.href=r+'&r=1'};if(/Firefox/.test(navigator.userAgent)){setTimeout(x,0)}else{x()}})()">
+						<img src="https://img3.doubanio.com/pics/fw2douban_s.png" alt="推荐到豆瓣" />
+					</a>
+				</li>
+
+String charset = "GBK", backupCharset = "UTF-8";
+					if (fileHeader.isFileNameUTF8Encoded()) { // 这方法没用
+						charset = "UTF-8";
+						backupCharset = "GBK";
+					}
+					fileName = new String(fileNameInBytes, charset);
+					// 到这一步文件名还是有可能是乱码，再加一层纠正逻辑
+					if (ChineseUtil.hasMessyCode(fileName)) {
+						fileName = new String(fileNameInBytes, backupCharset);
+					}
+
+
+	public static void main(String[] args) {
+		RestTemplate restTemplate = new RestTemplate();
+		/*UserDto userDto = new UserDto();
+		userDto.setUserName("qirongjun");
+		userDto.setPassword("123456");
+		userDto.setMobileNumber("13626295987");
+		ResponseEntity<UserDto> entity = restTemplate.postForEntity(USER_SERVICE_URI, userDto, UserDto.class);
+		HttpStatus httpStatus = entity.getStatusCode();
+		if (httpStatus != null && httpStatus.equals(HttpStatus.OK)) {
+			userDto = entity.getBody();
+		}
+		System.out.println(userDto);*/
+		UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(USER_SERVICE_URI).queryParam("userName", "caizhukui");
+		URI uri = builder.build().encode().toUri();
+		UserDto userDto = restTemplate.getForObject(uri, UserDto.class);
+		System.out.println(userDto);
+	}
+
+<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-oxm</artifactId>
+			<version>${springframework.version}</version>
+		</dependency>
+		
+		<!-- Uses Castor for XML -->
+		<dependency>
+			<groupId>org.codehaus.castor</groupId>
+			<artifactId>castor</artifactId>
+			<version>1.2</version>
+		</dependency>
+	
+		<!-- Castor need this -->
+		<dependency>
+			<groupId>xerces</groupId>
+			<artifactId>xercesImpl</artifactId>
+			<version>2.8.1</version>
+		</dependency>
+
+/**
+	 * AES解密XML字符串
+	 * 
+	 * @param msgSignature 消息体签名，用于验证消息体的正确性
+	 * @param timestamp 时间戳
+	 * @param nonce 随机数
+	 * @param encryptedXml AES加密后的XML字符串
+	 * @return AES解密后的XML字符串
+	 * @throws AesException AES异常
+	 * @author caizhukui
+	 * @date 2017年7月28日上午11:38:18
+	 */
+	private String decryptMsg(String msgSignature, String timestamp, String nonce, String encryptedXml) throws AesException {
+		
+	}
+	
+	/**
+	 * AES加密XML字符串
+	 * 
+	 * @param xml 待加密的XML字符串
+	 * @return
+	 * @author caizhukui
+	 * @date 2017年7月28日上午11:47:36
+	 */
+	private String encryptMsg(String xml) {
+		
+	}
+
+consumes = MediaType.APPLICATION_XML_VALUE, produces = MediaType.APPLICATION_XML_VALUE
+@ResponseStatus(HttpStatus.CREATED)
+
+/** 使用JAXB把Object转换成String的对象 */
+	private Marshaller marshaller;
+	
+	/** 使用JAXB把String转换成Object的对象 */
+	private Unmarshaller unmarshaller;
+
+JAXBContext unmarshallerContext = JAXBContext.newInstance(WxMsg.class);
+		unmarshaller = unmarshallerContext.createUnmarshaller();
+		JAXBContext marshallerContext = JAXBContext.newInstance(WxReplyMsg.class);
+		marshaller = marshallerContext.createMarshaller();
+
+public static void main(String[] args) {
+		parse("权力的游戏第七季第3集");
+		parse("权力的游戏 第七季 第3集");
+		parse("权力的游戏第七季第03集");
+		parse(" 权力的游戏 第七季 第03集 ");
+		parse(" 权力的游戏 第七季 第三集 ");
+		parse(" 权力的游戏 第7季 第三集 ");
+		parse(" 权力的游戏 第07季 第三集 ");
+		parse(" 权力的游戏 S07E03 ");
+		parse(" 权力的游戏    S07  E03 ");
+	}
+
+/usr/java/jdk1.7.0_79

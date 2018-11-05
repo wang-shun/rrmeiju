@@ -1,0 +1,259 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:context="http://www.springframework.org/schema/context"
+    xmlns:cache="http://www.springframework.org/schema/cache"
+    xmlns:task="http://www.springframework.org/schema/task"
+    xmlns:tx="http://www.springframework.org/schema/tx"
+    xmlns:p="http://www.springframework.org/schema/p"
+    xsi:schemaLocation="
+        http://www.springframework.org/schema/beans 
+        http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+        http://www.springframework.org/schema/context 
+        http://www.springframework.org/schema/context/spring-context-3.0.xsd
+        http://www.springframework.org/schema/cache
+        http://www.springframework.org/schema/cache/spring-cache.xsd
+        http://www.springframework.org/schema/task 
+        http://www.springframework.org/schema/task/spring-task-3.0.xsd
+        http://www.springframework.org/schema/tx 
+        http://www.springframework.org/schema/tx/spring-tx-3.0.xsd">
+    
+    <!-- 自动扫描的包名 -->
+    <context:component-scan annotation-config="true" base-package="com.caizhukui.rrmeiju"/>
+    
+    <!-- 启用对异步的支持 -->
+   	<!--  <task:annotation-driven/> -->
+   	<task:executor id="executor" pool-size="5-100" queue-capacity="100" rejection-policy="ABORT" keep-alive="120"/>
+   	<task:scheduler id="scheduler" pool-size="10"/>
+    <task:annotation-driven executor="executor" scheduler="scheduler"/>
+    
+    <!-- <task:scheduled-tasks scheduler="scheduler" >
+    	<task:scheduled ref="partitioner" method="createPartitions" cron="0 0 3 * * ?"/>
+	</task:scheduled-tasks> -->
+	
+	<!-- 启用对缓存的支持 -->
+	<cache:annotation-driven cache-manager="cacheManager"/>
+	
+	<bean id="cacheManager" class="org.springframework.cache.support.SimpleCacheManager">
+		<!-- 定义缓存集合caches -->
+    	<property name="caches">
+	        <set>
+	           <!-- ConcurrentMapCacheFactoryBean为Spring提供的内存存储工厂类 -->
+	           <bean p:name="metaData" class="org.springframework.cache.concurrent.ConcurrentMapCacheFactoryBean"/>
+	           <bean p:name="config" class="org.springframework.cache.concurrent.ConcurrentMapCacheFactoryBean"/> 
+	        </set>
+	    </property>
+	</bean>
+    
+    <!-- 引入配置文件 -->
+    <bean id="propertyConfigurer" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+	    <property name="locations">
+	        <list>
+	        	<value>classpath:properties/jdbc-dbcp.properties</value>
+	        	<value>classpath:properties/redis.properties</value>
+	        	<value>classpath:properties/activemq.properties</value>
+	            <value>classpath:properties/location.properties</value>
+	            <value>classpath:properties/cloudstorage/*.properties</value>
+	            <!-- <value>classpath:properties/cloudstorage/cos.properties</value>
+	            <value>classpath:properties/cloudstorage/oss.properties</value>
+	            <value>classpath:properties/cloudstorage/qiniu.properties</value> -->
+	            <value>classpath:properties/sms/*.properties</value>
+	            <!-- <value>classpath:properties/sms/netease.properties</value> -->
+	            <value>classpath:properties/ots.properties</value>
+	            <value>classpath:properties/scheduled.properties</value>
+	            <value>classpath:properties/config.properties</value>
+	        </list>
+	    </property>
+	    <!-- 可以获取JVM参数，通过启动时-D参数指定或者System.setProperty()指定 -->
+	    <!-- <property name="systemPropertiesModeName" value="SYSTEM_PROPERTIES_MODE_OVERRIDE"/> -->
+	    <property name="ignoreUnresolvablePlaceholders" value="true"/>
+	</bean>
+	
+	<!-- Email Service -->
+	<bean id="mailSender" class="org.springframework.mail.javamail.JavaMailSenderImpl">
+		<!-- SMTP settings -->
+	    <property name="host" value="smtp-mail.outlook.com"/>
+	    <property name="port" value="587"/>
+	    <property name="username" value="ego_ecust@outlook.com"/>
+	    <property name="password" value="668965abc"/>
+	    <property name="javaMailProperties">
+	        <!-- additional properties specific to JavaMail -->
+	        <props>
+	            <prop key="mail.transport.protocol">smtp</prop>
+	            <prop key="mail.smtp.auth">true</prop>
+	            <prop key="mail.smtp.starttls.enable">true</prop>
+	            <!-- <prop key="mail.smtps.ssl.checkserveridentity">true</prop>
+                <prop key="mail.smtps.ssl.trust">*</prop> -->
+	        </props>
+	    </property>
+	</bean>
+	
+	<!-- this is a template message that we can pre-load with default state -->
+	<bean id="templateMessage" class="org.springframework.mail.SimpleMailMessage">
+	    <property name="from" value="ego_ecust@outlook.com"/>
+	    <property name="subject" value="Spring测试邮件"/>
+	</bean>
+	
+	<!-- Rest Template Configuration -->
+    <bean id="restTemplate" class="org.springframework.web.client.RestTemplate">
+    	<!-- CustomResponseErrorHandler类是通过@Component注解注册的 -->
+    	<property name="errorHandler" ref="customResponseErrorHandler"/>
+    </bean>
+
+	<!-- BOS Service -->
+	<!-- <bean id="bosService" class="com.caizhukui.rrmeiju.cloudstorage.impl.BosService">
+		<constructor-arg name="accessKeyId" value="${bos.access.key.id}"/>
+		<constructor-arg name="secretAccessKey" value="${bos.secret.access.key}"/>
+		<constructor-arg name="endpoint" value="${bos.endpoint.beijing}"/>
+	</bean> -->
+	
+	<!-- COS Service -->
+	<!-- <bean id="cosService" class="com.caizhukui.rrmeiju.cloudstorage.impl.CosService">
+		<constructor-arg name="appId" value="${cos.app.id}"/>
+		<constructor-arg name="secretId" value="${cos.secret.id}"/>
+		<constructor-arg name="secretKey" value="${cos.secret.key}"/>
+	</bean> -->
+	
+	<!-- OSS Service -->
+	<bean id="ossService" class="com.caizhukui.rrmeiju.cloudstorage.impl.OssService">
+		<constructor-arg name="accessKeyId" value="${oss.access.key.id}"/>
+		<constructor-arg name="accessKeySecret" value="${oss.access.key.secret}"/>
+		<constructor-arg name="endpoint" value="${oss.endpoint.shanghai}"/>
+	</bean>
+	
+	<!-- OTS Service -->
+	<!-- <bean id="otsService" class="com.caizhukui.rrmeiju.cloudstorage.impl.OtsService">
+		<constructor-arg name="accessKeyId" value="${ots.access.key.id}"/>
+		<constructor-arg name="accessKeySecret" value="${ots.access.key.secret}"/>
+		<constructor-arg name="endpoint" value="${ots.endpoint.beijing}"/>
+		<constructor-arg name="instanceName" value="${ots.instance.name}"/>
+	</bean> -->
+	
+	<!-- Qiniu Service -->
+	<!-- <bean id="qiniuService" class="com.caizhukui.rrmeiju.cloudstorage.impl.QiniuService">
+		<constructor-arg name="accessKey" value="${qiniu.access.key}"/>
+		<constructor-arg name="secretKey" value="${qiniu.secret.key}"/>
+	</bean> -->
+	
+	<!-- 阿里大于 Service -->
+	<bean id="smsService" class="com.caizhukui.rrmeiju.service.impl.SmsService">
+		<constructor-arg name="appKey" value="${alidayu.app.key}"/>
+		<constructor-arg name="appSecret" value="${alidayu.app.secret}"/>
+	</bean>
+	
+	<!-- Aliyun SMS Service -->
+	<bean id="aliyunSmsService" class="com.caizhukui.rrmeiju.service.impl.AliyunSmsService">
+		<constructor-arg name="accessKeyId" value="${oss.access.key.id}"/>
+		<constructor-arg name="accessKeySecret" value="${oss.access.key.secret}"/>
+	</bean>
+	
+	<!-- 网易云信 Service -->
+	<!-- <bean id="neteaseSmsService" class="com.caizhukui.rrmeiju.service.impl.NeteaseSmsService">
+		<constructor-arg name="appKey" value="${netease.app.key}"/>
+		<constructor-arg name="appSecret" value="${netease.app.secret}"/>
+	</bean> -->
+ 
+ 	<!-- DBCP数据源 -->
+    <bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
+    	<property name="driverClassName" value="${driver}"/>
+    	<property name="url" value="${url}"/>
+    	<property name="username" value="${username}"/>
+    	<property name="password" value="${password}"/>
+    	<!-- 最大连接数据库连接数，设置为0时，表示没有限制 -->
+    	<property name="maxActive" value="${maxActive}"/>
+    	<!-- 最大等待连接中的数量，设置为0时，表示没有限制 -->
+    	<property name="maxIdle" value="${maxIdle}"/>
+    	<property name="minIdle" value="${minIdle}"/>
+    	<!-- 最大等待秒数，单位为毫秒，超过时间会报出错误信息 -->
+    	<property name="maxWait" value="${maxWait}"/>
+    	<!-- 从数据源中返回的连接是否采用自动提交机制，默认值为true -->
+    	<property name="defaultAutoCommit" value="true"/>
+    	<!-- 数据源是否仅能执行只读操作，默认值为false -->
+    	<property name="defaultReadOnly" value="false"/>
+    	<!-- 是否自我中断，默认值为false -->
+    	<property name="removeAbandoned" value="false"/>
+    	<!-- 是否记录中断事件，默认值为false -->
+    	<property name="logAbandoned" value="false"/>
+    	<!-- 
+    		这两行配置很重要！MySQL服务器默认的wait_timeout是8小时，如果一个连接的空闲时间超过8个小时，
+    		MySQL将自动断开该连接，而连接池却认为该连接还是有效的，当应用申请使用该连接时，就会导致报错！
+    	 -->
+    	<property name="validationQuery" value="SELECT 1"/>
+    	<property name="testOnBorrow" value="true"/>
+    </bean>
+    
+    <!-- C3P0数据源 -->
+<!--     <bean id="dataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource" destroy-method="close"> -->
+<!--     	<property name="driverClass" value="${driverClass}"/> -->
+<!--     	<property name="jdbcUrl" value="${jdbcUrl}"/> -->
+<!--     	<property name="user" value="${user}"/> -->
+<!--     	<property name="password" value="${password}"/> -->
+<!--     	当连接池中的连接用完时，C3P0一次性创建新连接的数目 -->
+<!--     	<property name="acquireIncrement" name="${acquireIncrement}"/> -->
+<!--     	从数据库获取新连接失败后重复尝试获取的次数 -->
+<!--     	<property name="acquireRetryAttempts" name="${acquireRetryAttempts}"/> -->
+<!--     	两次连接中间隔时间，单位毫秒，默认值为1000 -->
+<!--     	<property name="acquireRetryDelay" value="${acquireRetryDelay}"/> -->
+<!--     	连接关闭时是否将所有未提交的操作回滚，默认值为false -->
+<!--     	<property name="autoCommitOnClose" value="false"/> -->
+<!--     	连接池中保留的最大连接数，默认值为15 -->
+<!--     	<property name="maxPoolSize" value="${maxPoolSize}"/> -->
+<!--     	连接池中保留的最小连接数 -->
+<!--     	<property name="minPoolSize" value="${minPoolSize}"/> -->
+<!--     	初始化时创建的连接数，应在minPoolSize与maxPoolSize之间取值，默认值为3 -->
+<!--     	<property name="initialPoolSize" value="${initialPoolSize}"/> -->
+			<!-- 
+				这三行配置很重要！MySQL服务器默认的wait_timeout是8小时，如果一个连接的空闲时间超过8个小时，
+    			MySQL将自动断开该连接，而连接池却认为该连接还是有效的，当应用申请使用该连接时，就会导致报错！
+			-->
+			<!-- <property name="testConnectionOnCheckin" value="false"/>
+    		<property name="testConnectionOnCheckout" value="true"/>
+    		<property name="preferredTestQuery" value="SELECT 1"/> -->
+<!--     </bean> -->
+    
+    <!-- JNDI数据源 -->
+    <!--
+    <bean id="dataSource" class="org.springframework.jndi.JndiObjectFactoryBean">       
+    	<property name="jndiName" value="java:comp/env/jdbc/bbt"/>       
+	</bean>
+	-->
+    
+    <!-- 配置SqlSessionFactoryBean -->
+    <bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+        <property name="dataSource" ref="dataSource"/>
+        <!--  <property name="configLocation" value="classpath:mybatis.xml"/>-->
+        <!-- 表示在包或以下所有目录中，以Mapper.xml结尾的所有文件 -->
+        <property name="mapperLocations">
+        	<list>
+            	<value>classpath:mybatis/**/*Mapper.xml</value>
+        	</list>
+        </property>
+    </bean>
+    
+    <!-- DAO接口所在包名，Spring会自动查找其下的类 -->  
+    <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">  
+        <property name="basePackage" value="com.caizhukui.rrmeiju.dao"/>  
+        <property name="sqlSessionFactoryBeanName" value="sqlSessionFactory"></property>  
+    </bean>
+    
+    <!-- 使用JDBC事务 -->
+    <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">  
+    	<property name="dataSource" ref="dataSource"/>
+    </bean>
+    
+    <!-- 使用annotation注解方式配置事务 -->
+    <tx:annotation-driven transaction-manager="transactionManager"/>
+    
+    <!-- Redis配置 -->
+	<import resource="classpath:spring-data-redis.xml"/>
+	
+	<!-- JMS配置，ActiveMQ实现方式 -->
+	<!-- <import resource="classpath:spring-jms.xml"/> -->
+    
+    <!-- JCaptcha配置 -->
+    <import resource="classpath:spring-jcaptcha.xml"/>
+    
+    <!-- 责任链配置 -->
+    <import resource="classpath:chain-config.xml"/>
+    
+ </beans>

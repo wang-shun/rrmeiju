@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.caizhukui.rrmeiju.mapper.SubtitleFileMapper">
+
+	<resultMap id="baseMap" type="SubtitleFile">
+		<id property="id" column="id" />
+		<result property="uuid" column="uuid" />
+		<result property="fileName" column="file_name" />
+		<result property="fileSize" column="file_size" />
+		<result property="subtitleUuid" column="subtitle_uuid" />
+		<result property="gmtCreate" column="gmt_create" />
+        <result property="gmtModified" column="gmt_modified" />
+        <association property="subtitle" column="subtitle_uuid" javaType="Subtitle" select="com.caizhukui.rrmeiju.mapper.SubtitleMapper.getByUuid" />
+	</resultMap>
+    	
+	<select id="getBySubtitleUuid" parameterType="String" resultType="SubtitleFile" resultMap="baseMap">
+		SELECT * FROM subtitle_file WHERE subtitle_uuid = #{subtitleUuid}
+	</select>
+
+</mapper>
